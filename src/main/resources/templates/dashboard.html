@@ -143,10 +143,20 @@ async function fetchAndDisplayLosers() {
   }
 }
 // Refresh every 12 hours (43200000 ms) and initial load
-setInterval(fetchAndDisplayGainers, 43200000);
-setInterval(fetchAndDisplayLosers, 43200000);
-fetchAndDisplayGainers();
-fetchAndDisplayLosers();
+const lastFetch = localStorage.getItem('lastStockFetch');
+const now = Date.now();
+if (!lastFetch || now - lastFetch > 43200000) {
+  fetchAndDisplayGainers();
+  fetchAndDisplayLosers();
+  localStorage.setItem('lastStockFetch', now);
+}
+
+// SetInterval remains to handle future updates every 12 hours
+setInterval(() => {
+  fetchAndDisplayGainers();
+  fetchAndDisplayLosers();
+  localStorage.setItem('lastStockFetch', Date.now());
+}, 43200000);
 </script>
 
 </body>

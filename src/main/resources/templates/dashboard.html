@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Indian Stock Market Top Performers</title>
+  <style>
+    body { font-family: Arial; background: #f7fafc; margin: 40px; }
+    h1 { color: #007bff; }
+    table {
+      width: 95%; margin-top: 30px; border-collapse: collapse; box-shadow: 0 2px 9px rgba(0,0,0,0.11);
+      background: #fff;
+    }
+    th, td { padding: 8px 14px; border-bottom: 1px solid #dee2e6; text-align: center; }
+    th { background-color: #007bff; color: #fff; position: sticky; top: 0; }
+    th:hover { background: #007bff; color: #fff; }
+    tbody { background: #f1f3ff; }
+    thead, tr { display: table; width: 100%; table-layout: fixed; }
+    tbody { display: block; max-height: 400px; overflow-y: auto; }
+    .pos { color: green; }
+    .neg { color: red; }
+  </style>
+</head>
+<body>
+
+  <h1>Top Indian Share Market Gainers</h1>
+  <div style="overflow-x:auto;">
+    <table id="stockTableGainers">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Company</th>
+          <th>Price</th>
+          <th>Change (%)</th>
+          <th>Net Change</th>
+          <th>Open</th>
+          <th>Close</th>
+          <th>High</th>
+          <th>Low</th>
+          <th>Volume</th>
+          <th>Year High</th>
+          <th>Year Low</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody id="stockBodyGainers">
+        <!-- Rows populated by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <h1>Top Indian Share Market Losers</h1>
+  <div style="overflow-x:auto;">
+    <table id="stockTableLosers">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Company</th>
+          <th>Price</th>
+          <th>Change (%)</th>
+          <th>Net Change</th>
+          <th>Open</th>
+          <th>Close</th>
+          <th>High</th>
+          <th>Low</th>
+          <th>Volume</th>
+          <th>Year High</th>
+          <th>Year Low</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody id="stockBodyLosers">
+        <!-- Rows populated by JS -->
+      </tbody>
+    </table>
+  </div>
+
+<script>
+async function fetchAndDisplayGainers() {
+  try {
+    const response = await fetch('/api/stocks/top');
+    const data = await response.json();
+    const stocks = data.top_gainers || data;
+    const tbody = document.getElementById('stockBodyGainers');
+    tbody.innerHTML = '';
+    (stocks || []).forEach(stock => {
+      let row = `
+        <tr>
+          <td>${stock.ticker_id || ''}</td>
+          <td>${stock.company_name || ''}</td>
+          <td>${stock.price || ''}</td>
+          <td class="${Number(stock.percent_change) >= 0 ? 'pos' : 'neg'}">${stock.percent_change || ''}</td>
+          <td>${stock.net_change || ''}</td>
+          <td>${stock.open || ''}</td>
+          <td>${stock.close || ''}</td>
+          <td>${stock.high || ''}</td>
+          <td>${stock.low || ''}</td>
+          <td>${stock.volume || ''}</td>
+          <td>${stock.year_high || ''}</td>
+          <td>${stock.year_low || ''}</td>
+          <td>${stock.time || ''}</td>
+        </tr>
+      `;
+      tbody.innerHTML += row;
+    });
+  } catch (error) {
+    document.getElementById('stockBodyGainers').innerHTML =
+      `<tr><td colspan="13">Failed to fetch stocks: ${error}</td></tr>`;
+    console.error('Failed to fetch gainer stocks', error);
+  }
+}
+
+async function fetchAndDisplayLosers() {
+  try {
+    const response = await fetch('/api/stocks/losers');
+    const data = await response.json();
+    console.log('Losers API response:', data); // Check the console for actual response
+    const stocks = Array.isArray(data.top_losers) ? data.top_losers :
+                   Array.isArray(data.losers) ? data.losers :
+                   Array.isArray(data) ? data : [];
+    const tbody = document.getElementById('stockBodyLosers');
+    tbody.innerHTML = '';
+    stocks.forEach(stock => {
+      let row = `<tr>
+        <td>${stock.ticker_id || ''}</td>
+        <td>${stock.company_name || ''}</td>
+        <td>${stock.price || ''}</td>
+        <td class="${Number(stock.percent_change) >= 0 ? 'pos' : 'neg'}">${stock.percent_change || ''}</td>
+        <td>${stock.net_change || ''}</td>
+        <td>${stock.open || ''}</td>
+        <td>${stock.close || ''}</td>
+        <td>${stock.high || ''}</td>
+        <td>${stock.low || ''}</td>
+        <td>${stock.volume || ''}</td>
+        <td>${stock.year_high || ''}</td>
+        <td>${stock.year_low || ''}</td>
+        <td>${stock.time || ''}</td>
+      </tr>`;
+      tbody.innerHTML += row;
+    });
+  } catch (error) {
+    document.getElementById('stockBodyLosers').innerHTML =
+      `<tr><td colspan="13">Failed to fetch stocks: ${error}</td></tr>`;
+    console.error('Failed to fetch loser stocks', error);
+  }
+}
+// Refresh every 12 hours (43200000 ms) and initial load
+setInterval(fetchAndDisplayGainers, 43200000);
+setInterval(fetchAndDisplayLosers, 43200000);
+fetchAndDisplayGainers();
+fetchAndDisplayLosers();
+</script>
+
+</body>
+</html>

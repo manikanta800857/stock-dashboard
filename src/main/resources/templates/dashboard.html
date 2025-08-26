@@ -1,58 +1,529 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Indian Stock Market Top Performers</title>
+  <title>Indian Stock Market Top Performers - Dark Mode</title>
   <style>
-    body { font-family: Arial; background: #f7fafc; margin: 40px; }
-    h1 { color: #007bff; }
-    table {
-      width: 95%; margin-top: 30px; border-collapse: collapse;
-      box-shadow: 0 2px 9px rgba(0,0,0,0.11);
-      background: #fff;
+    /* CSS Custom Properties for Theme Colors */
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: rgba(255, 255, 255, 0.95);
+      --bg-gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --bg-gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --text-primary: #007bff;
+      --text-secondary: #333;
+      --text-tertiary: #222;
+      --table-header-bg: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+      --table-row-hover: linear-gradient(90deg, rgba(0, 123, 255, 0.1) 0%, rgba(0, 123, 255, 0.05) 100%);
+      --border-color: rgba(222, 226, 230, 0.5);
+      --border-light: rgba(222, 226, 230, 0.3);
+      --shadow-color: rgba(0,0,0,0.2);
+      --shadow-heavy: rgba(0,0,0,0.3);
+      --login-bg: rgba(255, 255, 255, 0.95);
+      --login-border: rgba(255, 255, 255, 0.2);
+      --input-bg: rgba(255, 255, 255, 0.8);
+      --input-border: #ddd;
+      --scrollbar-track: rgba(0, 0, 0, 0.1);
+      --positive-color: #28a745;
+      --positive-glow: rgba(40, 167, 69, 0.3);
+      --positive-bright: #34ce57;
+      --negative-color: #dc3545;
+      --negative-glow: rgba(220, 53, 69, 0.3);
+      --negative-bright: #ff4757;
+      --loading-border: rgba(0, 123, 255, 0.3);
     }
-    th, td { padding: 8px 14px; border-bottom: 1px solid #dee2e6; text-align: center; }
-    th { background-color: #007bff; color: #fff; position: sticky; top: 0; }
-    tbody { background: #f1f3ff; }
-    thead, tr { display: table; width: 100%; table-layout: fixed; }
-    tbody { display: block; max-height: 400px; overflow-y: auto; }
-    .pos { color: green; }
-    .neg { color: red; }
+
+    /* Dark Mode Variables */
+    [data-theme="dark"] {
+      --bg-primary: #121212;
+      --bg-secondary: rgba(18, 18, 18, 0.95);
+      --bg-gradient-1: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+      --bg-gradient-2: linear-gradient(135deg, #553c9a 0%, #7c3aed 100%);
+      --text-primary: #60a5fa;
+      --text-secondary: #e2e8f0;
+      --text-tertiary: #f1f5f9;
+      --table-header-bg: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+      --table-row-hover: linear-gradient(90deg, rgba(96, 165, 250, 0.15) 0%, rgba(96, 165, 250, 0.08) 100%);
+      --border-color: rgba(75, 85, 99, 0.5);
+      --border-light: rgba(75, 85, 99, 0.3);
+      --shadow-color: rgba(0,0,0,0.5);
+      --shadow-heavy: rgba(0,0,0,0.7);
+      --login-bg: rgba(31, 41, 55, 0.95);
+      --login-border: rgba(75, 85, 99, 0.3);
+      --input-bg: rgba(55, 65, 81, 0.8);
+      --input-border: #4b5563;
+      --scrollbar-track: rgba(255, 255, 255, 0.1);
+      --positive-color: #10b981;
+      --positive-glow: rgba(16, 185, 129, 0.3);
+      --positive-bright: #34d399;
+      --negative-color: #ef4444;
+      --negative-glow: rgba(239, 68, 68, 0.3);
+      --negative-bright: #f87171;
+      --loading-border: rgba(96, 165, 250, 0.3);
+    }
+
+    body { 
+      font-family: Arial; 
+      background: var(--bg-gradient-1);
+      margin: 0; 
+      padding: 0;
+      min-height: 100vh;
+      animation: backgroundShift 10s ease-in-out infinite alternate;
+      transition: all 0.3s ease;
+    }
+
+    @keyframes backgroundShift {
+      0% { background: var(--bg-gradient-1); }
+      100% { background: var(--bg-gradient-2); }
+    }
+
+    /* Dark Mode Toggle Button - Fixed Position to Avoid Overlap */
+    .theme-toggle {
+      position: fixed;
+      bottom: 25px;
+      left: 25px;
+      z-index: 1000;
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: 50px;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px var(--shadow-color);
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--shadow-color);
+    }
+    
+    h1 { 
+      color: var(--text-primary); 
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes titleGlow {
+      0% { text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+      100% { text-shadow: 2px 2px 8px rgba(96, 165, 250, 0.5); }
+    }
+    
+    /* Fixed Table Styles with Animations */
+    table {
+      width: 100%; 
+      margin-top: 30px; 
+      border-collapse: collapse;
+      box-shadow: 0 8px 32px var(--shadow-color);
+      background: var(--bg-secondary);
+      table-layout: fixed;
+      border-radius: 15px;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      animation: tableSlideIn 1s ease-out;
+    }
+
+    @keyframes tableSlideIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(30px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+    
+    th, td { 
+      padding: 8px 4px; 
+      border-bottom: 1px solid var(--border-color);
+      text-align: center; 
+      word-wrap: break-word;
+      overflow: hidden;
+      font-size: 12px;
+      vertical-align: middle;
+      line-height: 1.3;
+      transition: all 0.3s ease;
+      color: var(--text-secondary);
+    }
+    
+    th { 
+      background: var(--table-header-bg);
+      color: #fff; 
+      position: sticky; 
+      top: 0;
+      font-weight: bold;
+      font-size: 11px;
+      height: 45px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+    
+    /* Column Widths */
+    th:nth-child(1), td:nth-child(1) { width: 6%; white-space: nowrap; } 
+    th:nth-child(2), td:nth-child(2) { 
+      width: 25%; 
+      white-space: normal; 
+      text-align: left; 
+      padding-left: 8px;
+      padding-right: 4px;
+      hyphens: auto; 
+      word-break: break-word; 
+    }
+    th:nth-child(3), td:nth-child(3) { width: 6%; white-space: nowrap; } 
+    th:nth-child(4), td:nth-child(4) { width: 7%; white-space: nowrap; } 
+    th:nth-child(5), td:nth-child(5) { width: 7%; white-space: nowrap; } 
+    th:nth-child(6), td:nth-child(6) { width: 5%; white-space: nowrap; } 
+    th:nth-child(7), td:nth-child(7) { width: 5%; white-space: nowrap; } 
+    th:nth-child(8), td:nth-child(8) { width: 5%; white-space: nowrap; } 
+    th:nth-child(9), td:nth-child(9) { width: 5%; white-space: nowrap; } 
+    th:nth-child(10), td:nth-child(10) { width: 8%; white-space: nowrap; } 
+    th:nth-child(11), td:nth-child(11) { width: 6%; white-space: nowrap; } 
+    th:nth-child(12), td:nth-child(12) { width: 6%; white-space: nowrap; } 
+    th:nth-child(13), td:nth-child(13) { width: 9%; white-space: nowrap; } 
+    
+    tbody tr {
+      min-height: 40px;
+      height: auto;
+      animation: rowFadeIn 0.5s ease-out;
+      transition: all 0.3s ease;
+    }
+
+    @keyframes rowFadeIn {
+      from { 
+        opacity: 0; 
+        transform: translateX(-20px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateX(0); 
+      }
+    }
+    
+    tbody td {
+      height: auto;
+    }
+    
+    tbody { 
+      display: block; 
+      max-height: 400px; 
+      overflow-y: auto;
+      width: 100%;
+    }
+    
+    thead, tbody tr { 
+      display: table; 
+      width: 100%; 
+      table-layout: fixed; 
+    }
+    
+    /* Animated price changes */
+    .pos { 
+      color: var(--positive-color); 
+      font-weight: bold; 
+      animation: positiveGlow 2s ease-in-out infinite alternate;
+    }
+    
+    .neg { 
+      color: var(--negative-color); 
+      font-weight: bold; 
+      animation: negativeGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes positiveGlow {
+      0% { 
+        color: var(--positive-color); 
+        text-shadow: 0 0 5px var(--positive-glow);
+      }
+      100% { 
+        color: var(--positive-bright); 
+        text-shadow: 0 0 10px var(--positive-glow);
+      }
+    }
+
+    @keyframes negativeGlow {
+      0% { 
+        color: var(--negative-color); 
+        text-shadow: 0 0 5px var(--negative-glow);
+      }
+      100% { 
+        color: var(--negative-bright); 
+        text-shadow: 0 0 10px var(--negative-glow);
+      }
+    }
+    
+    /* Centered Login Container with Animation */
+    #loginContainer {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--login-bg);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px var(--shadow-heavy);
+      text-align: center;
+      min-width: 350px;
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--login-border);
+      animation: loginSlideIn 1s ease-out;
+    }
+
+    @keyframes loginSlideIn {
+      from { 
+        opacity: 0; 
+        transform: translate(-50%, -50%) scale(0.8); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translate(-50%, -50%) scale(1); 
+      }
+    }
+    
+    #loginContainer h2 {
+      color: var(--text-primary);
+      margin-bottom: 30px;
+      font-size: 24px;
+      animation: titleBounce 2s ease-in-out infinite;
+    }
+
+    @keyframes titleBounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+    
+    #loginContainer input {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px 15px;
+      border: 2px solid var(--input-border);
+      border-radius: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+      background: var(--input-bg);
+      color: var(--text-secondary);
+    }
+
+    #loginContainer input::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.7;
+    }
+
+    [data-theme="dark"] #loginContainer input::placeholder {
+      color: #9ca3af;
+    }
+    
+    #loginContainer input:focus {
+      outline: none;
+      border-color: var(--text-primary);
+      box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
+      transform: scale(1.02);
+    }
+    
+    #loginContainer button {
+      width: 48%;
+      margin: 15px 1% 5px 1%;
+      padding: 12px 20px;
+      background: var(--table-header-bg);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      transform: translateY(0);
+    }
+    
+    #loginContainer button:hover {
+      background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(96, 165, 250, 0.4);
+    }
+    
+    /* Dashboard styles with animations */
+    #dashboardContainer {
+      margin: 20px;
+      padding: 0 10px;
+      animation: dashboardFadeIn 1s ease-out;
+    }
+
+    @keyframes dashboardFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
     #toggleButtons button {
       margin: 10px 12px 10px 0;
-      padding: 8px 20px;
-      background: #007bff;
+      padding: 12px 25px;
+      background: var(--table-header-bg);
       color: white;
       border: none;
-      border-radius: 3px;
+      border-radius: 25px;
       font-size: 16px;
       cursor: pointer;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
     }
+
+    #toggleButtons button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transition: all 0.4s ease;
+      transform: translate(-50%, -50%);
+    }
+
+    #toggleButtons button:hover::before {
+      width: 200px;
+      height: 200px;
+    }
+
+    #toggleButtons button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(96, 165, 250, 0.4);
+    }
+
     #toggleButtons button.active {
-      background: #0056b3;
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
     }
-    #loginContainer input {
-      margin: 5px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+
+    #logoutBtn:hover {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+      box-shadow: 0 15px 35px rgba(220, 38, 38, 0.4) !important;
     }
-    #loginContainer button {
-      margin: 5px;
-      padding: 10px 20px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+    
+    /* Responsive table container */
+    .table-container {
+      overflow-x: auto;
+      margin-top: 20px;
+      border-radius: 15px;
+      border: 1px solid var(--border-light);
+      animation: containerSlideIn 0.8s ease-out;
+    }
+
+    @keyframes containerSlideIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+    
+    /* Enhanced Hover effects */
+    tbody tr:hover {
+      background: var(--table-row-hover);
+      transform: scale(1.01);
+      box-shadow: 0 5px 15px rgba(96, 165, 250, 0.2);
+    }
+    
+    /* Company name specific styling */
+    .company-name {
+      font-weight: 500;
+      color: var(--text-secondary);
+      font-size: 12px;
+      line-height: 1.2;
+      transition: color 0.3s ease;
+    }
+
+    tbody tr:hover .company-name {
+      color: var(--text-primary);
+    }
+
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid var(--loading-border);
+      border-radius: 50%;
+      border-top-color: var(--text-primary);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Container transitions */
+    #gainersContainer, #losersContainer {
+      transition: all 0.5s ease-in-out;
+    }
+
+    /* Pulse animation for buttons */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    /* Scrollbar styling */
+    tbody::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    tbody::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+      border-radius: 10px;
+    }
+
+    tbody::-webkit-scrollbar-thumb {
+      background: var(--table-header-bg);
+      border-radius: 10px;
+    }
+
+    tbody::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+    }
+
+    /* Smooth transitions for theme switching */
+    *, *::before, *::after {
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Responsive adjustments for mobile */
+    @media (max-width: 768px) {
+      .theme-toggle {
+        bottom: 15px;
+        left: 15px;
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+      
+      #dashboardContainer {
+        margin: 10px;
+        padding: 0 5px;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Login Form -->
-  <div id="loginContainer" style="margin-bottom:30px;">
-    <h2>Login to Indian Stock Dashboard</h2>
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
+  <!-- Dark Mode Toggle Button - Moved to bottom left to avoid overlap -->
+  <button class="theme-toggle" id="themeToggle">🌙 Dark Mode</button>
+
+  <!-- Centered Login Form -->
+  <div id="loginContainer">
+    <h2>🚀 Login to Stock Dashboard</h2>
+    <input type="email" id="email" placeholder="📧 Enter your email" required />
+    <input type="password" id="password" placeholder="🔒 Enter your password" required minlength="6" />
     <button id="loginBtn">Login</button>
     <button id="signupBtn">Sign up</button>
   </div>
@@ -60,18 +531,18 @@
   <!-- Dashboard (hidden until login) -->
   <div id="dashboardContainer" style="display:none;">
     <div id="toggleButtons">
-      <button id="showGainersBtn" class="active">Top Gainers</button>
-      <button id="showLosersBtn">Top Losers</button>
-      <button id="logoutBtn" style="float:right;background:#DD2222;">Logout</button>
+      <button id="showGainersBtn" class="active pulse">📈 Top Gainers</button>
+      <button id="showLosersBtn">📉 Top Losers</button>
+      <button id="logoutBtn" style="float:right;background:linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);">🚪 Logout</button>
     </div>
 
     <div id="gainersContainer">
-      <h1>Top Indian Share Market Gainers</h1>
-      <div style="overflow-x:auto;">
+      <h1>🏆 Top Indian Share Market Gainers</h1>
+      <div class="table-container">
         <table id="stockTableGainers">
           <thead>
             <tr>
-              <th>Symbol</th><th>Company</th><th>Price</th><th>Change (%)</th>
+              <th>Symbol</th><th>Company Name</th><th>Price</th><th>Change (%)</th>
               <th>Net Change</th><th>Open</th><th>Close</th><th>High</th>
               <th>Low</th><th>Volume</th><th>Year High</th><th>Year Low</th><th>Time</th>
             </tr>
@@ -82,12 +553,12 @@
     </div>
 
     <div id="losersContainer" style="display:none;">
-      <h1>Top Indian Share Market Losers</h1>
-      <div style="overflow-x:auto;">
+      <h1>📉 Top Indian Share Market Losers</h1>
+      <div class="table-container">
         <table id="stockTableLosers">
           <thead>
             <tr>
-              <th>Symbol</th><th>Company</th><th>Price</th><th>Change (%)</th>
+              <th>Symbol</th><th>Company Name</th><th>Price</th><th>Change (%)</th>
               <th>Net Change</th><th>Open</th><th>Close</th><th>High</th>
               <th>Low</th><th>Volume</th><th>Year High</th><th>Year Low</th><th>Time</th>
             </tr>
@@ -102,6 +573,29 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     window.addEventListener('load', function() {
+      // Dark Mode Toggle Functionality
+      const themeToggle = document.getElementById('themeToggle');
+      const currentTheme = localStorage.getItem('theme') || 'light';
+
+      // Set initial theme
+      if (currentTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeToggle.textContent = '☀️ Light Mode';
+      }
+
+      themeToggle.addEventListener('click', function() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        if (currentTheme === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'light');
+          localStorage.setItem('theme', 'light');
+          this.textContent = '🌙 Dark Mode';
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem('theme', 'dark');
+          this.textContent = '☀️ Light Mode';
+        }
+      });
+
       // Initialize Supabase
       const supabaseUrl = 'https://fkywfdidfnaadgpoqwtw.supabase.co';
       const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZreXdmZGlkZm5hYWRncG9xd3R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYyMDgwMzMsImV4cCI6MjA3MTc4NDAzM30.hmUufu3rM0BzM8E9qJeKXOnFMMWdDE5NNPsBo2vT68w';
@@ -116,30 +610,81 @@
         }
       });
 
-      // Login functionality
+      // Email validation function
+      function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+
+      // Login functionality with validation
       document.getElementById('loginBtn').addEventListener('click', async function() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+        
+        if (!email || !password) {
+          alert('Please enter both email and password to login.');
+          return;
+        }
+        
+        if (!isValidEmail(email)) {
+          alert('Please enter a valid email address.');
+          return;
+        }
+        
+        // Add loading animation
+        this.innerHTML = '<span class="loading"></span> Logging in...';
+        this.disabled = true;
         
         const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        
+        // Reset button
+        this.innerHTML = 'Login';
+        this.disabled = false;
+        
         if (error) {
           alert('Login failed: ' + error.message);
         } else {
-          alert('Login successful! Welcome ' + data.user.email);
+          alert('🎉 Login successful! Welcome ' + data.user.email);
           showDashboard();
         }
       });
 
-      // Signup functionality
+      // Signup functionality with validation
       document.getElementById('signupBtn').addEventListener('click', async function() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
+        
+        if (!email || !password) {
+          alert('Please enter both email and password to sign up.');
+          return;
+        }
+        
+        if (!isValidEmail(email)) {
+          alert('Please enter a valid email address.');
+          return;
+        }
+        
+        if (password.length < 6) {
+          alert('Password must be at least 6 characters long.');
+          return;
+        }
+        
+        // Add loading animation
+        this.innerHTML = '<span class="loading"></span> Signing up...';
+        this.disabled = true;
         
         const { data, error } = await supabaseClient.auth.signUp({ email, password });
+        
+        // Reset button
+        this.innerHTML = 'Sign up';
+        this.disabled = false;
+        
         if (error) {
           alert('Signup failed: ' + error.message);
         } else {
-          alert('Signup successful! You can now login.');
+          alert('🎉 Signup successful! You can now login.');
+          document.getElementById('email').value = '';
+          document.getElementById('password').value = '';
         }
       });
 
@@ -149,19 +694,25 @@
         showLogin();
       });
 
-      // Toggle between gainers and losers
+      // Toggle between gainers and losers with animation
       document.getElementById('showGainersBtn').addEventListener('click', function() {
         showGainers();
+        this.classList.add('pulse');
+        document.getElementById('showLosersBtn').classList.remove('pulse');
       });
 
       document.getElementById('showLosersBtn').addEventListener('click', function() {
         showLosers();
+        this.classList.add('pulse');
+        document.getElementById('showGainersBtn').classList.remove('pulse');
       });
 
       // Helper functions
       function showLogin() {
         document.getElementById('loginContainer').style.display = 'block';
         document.getElementById('dashboardContainer').style.display = 'none';
+        document.getElementById('email').value = '';
+        document.getElementById('password').value = '';
       }
 
       function showDashboard() {
@@ -186,19 +737,62 @@
         document.getElementById('showLosersBtn').classList.add('active');
       }
 
-      // Fetch and display gainers
+      // Enhanced fetch functions with loading animations
       async function fetchAndDisplayGainers() {
+        const tbody = document.getElementById('stockBodyGainers');
+        tbody.innerHTML = '<tr><td colspan="13"><span class="loading"></span> Loading gainers...</td></tr>';
+        
         try {
           const response = await fetch('/api/stocks/top');
           const data = await response.json();
           const stocks = data.top_gainers || data;
-          const tbody = document.getElementById('stockBodyGainers');
+          
           tbody.innerHTML = '';
-          (stocks || []).forEach(stock => {
-            let row = `
-              <tr>
+          (stocks || []).forEach((stock, index) => {
+            setTimeout(() => {
+              let row = `
+                <tr style="animation-delay: ${index * 0.1}s">
+                  <td>${stock.ticker_id || ''}</td>
+                  <td class="company-name">${stock.company_name || ''}</td>
+                  <td>${stock.price || ''}</td>
+                  <td class="${Number(stock.percent_change) >= 0 ? 'pos' : 'neg'}">${stock.percent_change || ''}</td>
+                  <td>${stock.net_change || ''}</td>
+                  <td>${stock.open || ''}</td>
+                  <td>${stock.close || ''}</td>
+                  <td>${stock.high || ''}</td>
+                  <td>${stock.low || ''}</td>
+                  <td>${stock.volume || ''}</td>
+                  <td>${stock.year_high || ''}</td>
+                  <td>${stock.year_low || ''}</td>
+                  <td>${stock.time || ''}</td>
+                </tr>
+              `;
+              tbody.innerHTML += row;
+            }, index * 100);
+          });
+        } catch (error) {
+          tbody.innerHTML = `<tr><td colspan="13">❌ Failed to fetch stocks: ${error}</td></tr>`;
+          console.error('Failed to fetch gainer stocks', error);
+        }
+      }
+
+      async function fetchAndDisplayLosers() {
+        const tbody = document.getElementById('stockBodyLosers');
+        tbody.innerHTML = '<tr><td colspan="13"><span class="loading"></span> Loading losers...</td></tr>';
+        
+        try {
+          const response = await fetch('/api/stocks/losers');
+          const data = await response.json();
+          const stocks = Array.isArray(data.top_losers) ? data.top_losers :
+                       Array.isArray(data.losers) ? data.losers :
+                       Array.isArray(data) ? data : [];
+          
+          tbody.innerHTML = '';
+          stocks.forEach((stock, index) => {
+            setTimeout(() => {
+              let row = `<tr style="animation-delay: ${index * 0.1}s">
                 <td>${stock.ticker_id || ''}</td>
-                <td>${stock.company_name || ''}</td>
+                <td class="company-name">${stock.company_name || ''}</td>
                 <td>${stock.price || ''}</td>
                 <td class="${Number(stock.percent_change) >= 0 ? 'pos' : 'neg'}">${stock.percent_change || ''}</td>
                 <td>${stock.net_change || ''}</td>
@@ -210,48 +804,12 @@
                 <td>${stock.year_high || ''}</td>
                 <td>${stock.year_low || ''}</td>
                 <td>${stock.time || ''}</td>
-              </tr>
-            `;
-            tbody.innerHTML += row;
+              </tr>`;
+              tbody.innerHTML += row;
+            }, index * 100);
           });
         } catch (error) {
-          document.getElementById('stockBodyGainers').innerHTML =
-            `<tr><td colspan="13">Failed to fetch stocks: ${error}</td></tr>`;
-          console.error('Failed to fetch gainer stocks', error);
-        }
-      }
-
-      // Fetch and display losers
-      async function fetchAndDisplayLosers() {
-        try {
-          const response = await fetch('/api/stocks/losers');
-          const data = await response.json();
-          const stocks = Array.isArray(data.top_losers) ? data.top_losers :
-                       Array.isArray(data.losers) ? data.losers :
-                       Array.isArray(data) ? data : [];
-          const tbody = document.getElementById('stockBodyLosers');
-          tbody.innerHTML = '';
-          stocks.forEach(stock => {
-            let row = `<tr>
-              <td>${stock.ticker_id || ''}</td>
-              <td>${stock.company_name || ''}</td>
-              <td>${stock.price || ''}</td>
-              <td class="${Number(stock.percent_change) >= 0 ? 'pos' : 'neg'}">${stock.percent_change || ''}</td>
-              <td>${stock.net_change || ''}</td>
-              <td>${stock.open || ''}</td>
-              <td>${stock.close || ''}</td>
-              <td>${stock.high || ''}</td>
-              <td>${stock.low || ''}</td>
-              <td>${stock.volume || ''}</td>
-              <td>${stock.year_high || ''}</td>
-              <td>${stock.year_low || ''}</td>
-              <td>${stock.time || ''}</td>
-            </tr>`;
-            tbody.innerHTML += row;
-          });
-        } catch (error) {
-          document.getElementById('stockBodyLosers').innerHTML =
-            `<tr><td colspan="13">Failed to fetch stocks: ${error}</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="13">❌ Failed to fetch stocks: ${error}</td></tr>`;
           console.error('Failed to fetch loser stocks', error);
         }
       }

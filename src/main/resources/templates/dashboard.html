@@ -7,8 +7,8 @@
     :root {
       --bg-primary: #ffffff;
       --bg-secondary: rgba(255, 255, 255, 0.95);
-      --bg-gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --bg-gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --bg-gradient-1: rgba(255, 255, 255, 0.95);
+      --bg-gradient-2: rgba(255, 255, 255, 0.95);
       --text-primary: #007bff;
       --text-secondary: #333;
       --text-tertiary: #222;
@@ -36,8 +36,8 @@
     [data-theme="dark"] {
       --bg-primary: #121212;
       --bg-secondary: rgba(18, 18, 18, 0.95);
-      --bg-gradient-1: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
-      --bg-gradient-2: linear-gradient(135deg, #553c9a 0%, #7c3aed 100%);
+      --bg-gradient-1: #333;
+      --bg-gradient-2: #333;
       --text-primary: #60a5fa;
       --text-secondary: #e2e8f0;
       --text-tertiary: #f1f5f9;
@@ -47,7 +47,7 @@
       --border-light: rgba(75, 85, 99, 0.3);
       --shadow-color: rgba(0,0,0,0.5);
       --shadow-heavy: rgba(0,0,0,0.7);
-      --login-bg: rgba(31, 41, 55, 0.95);
+      --login-bg: #333;
       --login-border: rgba(75, 85, 99, 0.3);
       --input-bg: rgba(55, 65, 81, 0.8);
       --input-border: #4b5563;
@@ -105,10 +105,7 @@
       animation: titleGlow 3s ease-in-out infinite alternate;
     }
 
-    @keyframes titleGlow {
-      0% { text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-      100% { text-shadow: 2px 2px 8px rgba(96, 165, 250, 0.5); }
-    }
+
     
     /* Fixed Table Styles with Animations */
     table {
@@ -124,16 +121,6 @@
       animation: tableSlideIn 1s ease-out;
     }
 
-    @keyframes tableSlideIn {
-      from { 
-        opacity: 0; 
-        transform: translateY(30px); 
-      }
-      to { 
-        opacity: 1; 
-        transform: translateY(0); 
-      }
-    }
     
     th, td { 
       padding: 8px 4px; 
@@ -185,19 +172,7 @@
     tbody tr {
       min-height: 40px;
       height: auto;
-      animation: rowFadeIn 0.5s ease-out;
-      transition: all 0.3s ease;
-    }
-
-    @keyframes rowFadeIn {
-      from { 
-        opacity: 0; 
-        transform: translateX(-20px); 
-      }
-      to { 
-        opacity: 1; 
-        transform: translateX(0); 
-      }
+     
     }
     
     tbody td {
@@ -221,36 +196,18 @@
     .pos { 
       color: var(--positive-color); 
       font-weight: bold; 
-      animation: positiveGlow 2s ease-in-out infinite alternate;
+      
     }
     
     .neg { 
       color: var(--negative-color); 
       font-weight: bold; 
-      animation: negativeGlow 2s ease-in-out infinite alternate;
+    
     }
 
-    @keyframes positiveGlow {
-      0% { 
-        color: var(--positive-color); 
-        text-shadow: 0 0 5px var(--positive-glow);
-      }
-      100% { 
-        color: var(--positive-bright); 
-        text-shadow: 0 0 10px var(--positive-glow);
-      }
-    }
 
-    @keyframes negativeGlow {
-      0% { 
-        color: var(--negative-color); 
-        text-shadow: 0 0 5px var(--negative-glow);
-      }
-      100% { 
-        color: var(--negative-bright); 
-        text-shadow: 0 0 10px var(--negative-glow);
-      }
-    }
+
+
     
     /* Centered Login Container with Animation */
     #loginContainer {
@@ -269,30 +226,15 @@
       animation: loginSlideIn 1s ease-out;
     }
 
-    @keyframes loginSlideIn {
-      from { 
-        opacity: 0; 
-        transform: translate(-50%, -50%) scale(0.8); 
-      }
-      to { 
-        opacity: 1; 
-        transform: translate(-50%, -50%) scale(1); 
-      }
-    }
     
     #loginContainer h2 {
       color: var(--text-primary);
       margin-bottom: 30px;
       font-size: 24px;
-      animation: titleBounce 2s ease-in-out infinite;
+      
     }
 
-    @keyframes titleBounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-10px); }
-      60% { transform: translateY(-5px); }
-    }
-    
+
     #loginContainer input {
       display: block;
       width: 100%;
@@ -348,12 +290,6 @@
     #dashboardContainer {
       margin: 20px;
       padding: 0 10px;
-      animation: dashboardFadeIn 1s ease-out;
-    }
-
-    @keyframes dashboardFadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
     }
     
     #toggleButtons button {
@@ -410,19 +346,9 @@
       margin-top: 20px;
       border-radius: 15px;
       border: 1px solid var(--border-light);
-      animation: containerSlideIn 0.8s ease-out;
     }
 
-    @keyframes containerSlideIn {
-      from { 
-        opacity: 0; 
-        transform: translateY(20px); 
-      }
-      to { 
-        opacity: 1; 
-        transform: translateY(0); 
-      }
-    }
+
     
     /* Enhanced Hover effects */
     tbody tr:hover {
@@ -455,25 +381,13 @@
       animation: spin 1s ease-in-out infinite;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+  
 
-    /* Container transitions */
-    #gainersContainer, #losersContainer {
-      transition: all 0.5s ease-in-out;
-    }
+  
 
     /* Pulse animation for buttons */
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
 
-    .pulse {
-      animation: pulse 2s infinite;
-    }
+
 
     /* Scrollbar styling */
     tbody::-webkit-scrollbar {
@@ -517,13 +431,13 @@
 </head>
 <body>
   <!-- Dark Mode Toggle Button - Moved to bottom left to avoid overlap -->
-  <button class="theme-toggle" id="themeToggle">🌙 Dark Mode</button>
+  <button class="theme-toggle" id="themeToggle"> Dark Mode</button>
 
   <!-- Centered Login Form -->
   <div id="loginContainer">
-    <h2>🚀 Login to Stock Dashboard</h2>
-    <input type="email" id="email" placeholder="📧 Enter your email" required />
-    <input type="password" id="password" placeholder="🔒 Enter your password" required minlength="6" />
+    <h2> Login to Stock Dashboard</h2>
+    <input type="email" id="email" placeholder=" Enter your email" required />
+    <input type="password" id="password" placeholder=" Enter your password" required minlength="6" />
     <button id="loginBtn">Login</button>
     <button id="signupBtn">Sign up</button>
   </div>
@@ -531,13 +445,13 @@
   <!-- Dashboard (hidden until login) -->
   <div id="dashboardContainer" style="display:none;">
     <div id="toggleButtons">
-      <button id="showGainersBtn" class="active pulse">📈 Top Gainers</button>
-      <button id="showLosersBtn">📉 Top Losers</button>
-      <button id="logoutBtn" style="float:right;background:linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);">🚪 Logout</button>
+      <button id="showGainersBtn" class="active pulse"> Top Gainers</button>
+      <button id="showLosersBtn"> Top Losers</button>
+      <button id="logoutBtn" style="float:right;background:linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);"> Logout</button>
     </div>
 
     <div id="gainersContainer">
-      <h1>🏆 Top Indian Share Market Gainers</h1>
+      <h1> Top Indian Share Market Gainers</h1>
       <div class="table-container">
         <table id="stockTableGainers">
           <thead>
@@ -553,7 +467,7 @@
     </div>
 
     <div id="losersContainer" style="display:none;">
-      <h1>📉 Top Indian Share Market Losers</h1>
+      <h1> Top Indian Share Market Losers</h1>
       <div class="table-container">
         <table id="stockTableLosers">
           <thead>
@@ -580,7 +494,7 @@
       // Set initial theme
       if (currentTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
-        themeToggle.textContent = '☀️ Light Mode';
+        themeToggle.textContent = ' Light Mode';
       }
 
       themeToggle.addEventListener('click', function() {
@@ -588,11 +502,11 @@
         if (currentTheme === 'dark') {
           document.documentElement.setAttribute('data-theme', 'light');
           localStorage.setItem('theme', 'light');
-          this.textContent = '🌙 Dark Mode';
+          this.textContent = ' Dark Mode';
         } else {
           document.documentElement.setAttribute('data-theme', 'dark');
           localStorage.setItem('theme', 'dark');
-          this.textContent = '☀️ Light Mode';
+          this.textContent = ' Light Mode';
         }
       });
 
@@ -809,7 +723,7 @@
             }, index * 100);
           });
         } catch (error) {
-          tbody.innerHTML = `<tr><td colspan="13">❌ Failed to fetch stocks: ${error}</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="13"> Failed to fetch stocks: ${error}</td></tr>`;
           console.error('Failed to fetch loser stocks', error);
         }
       }

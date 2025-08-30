@@ -16,7 +16,6 @@ public class CachedStockService {
     @Autowired
     public CachedStockService(IndianStockApiService stockApiService) {
         this.stockApiService = stockApiService;
-        refreshCache(); // Fetch once at startup
     }
 
     // Runs every 12 hours (43,200,000 ms)

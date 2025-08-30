@@ -49,30 +49,4 @@ public class IndianStockApiService {
         }
     }
 
-        public Object getTopLosers() {
-    try {
-        String url = baseUrl + "/trending";  // Use same endpoint for now
-        
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("X-api-key", apiKey);
-        HttpEntity<?> entity = new HttpEntity<>(headers);
-        
-        ResponseEntity<Map> response = restTemplate.exchange(
-            url,
-            HttpMethod.GET,
-            entity,
-            Map.class
-        );
-        
-        System.out.println("LOSERS API RESPONSE: " + response.getBody());
-        
-        // For now, return the same data structure as gainers
-        // You can modify this later to filter for actual losers
-        return response.getBody() != null ? response.getBody().get("trending_stocks") : Collections.emptyList();
-    } catch (Exception ex) {
-        ex.printStackTrace();
-        return Collections.emptyList();
-    }
-
-    }
 }

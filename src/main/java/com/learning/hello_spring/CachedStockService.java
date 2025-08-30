@@ -10,8 +10,7 @@ public class CachedStockService {
 
     private final IndianStockApiService stockApiService;
 
-    private final AtomicReference<Object> cachedGainers = new AtomicReference<>();
-    private final AtomicReference<Object> cachedLosers = new AtomicReference<>();
+    private final AtomicReference<Object> cachedstocks = new AtomicReference<>();
 
     @Autowired
     public CachedStockService(IndianStockApiService stockApiService) {
@@ -21,14 +20,13 @@ public class CachedStockService {
     // Runs every 12 hours (43,200,000 ms)
     @Scheduled(fixedRate = 43200000)
     public void refreshCache() {
-        cachedGainers.set(stockApiService.getTopPerformers());
-        cachedLosers.set(stockApiService.getTopLosers());
+        cachedstocks.set(stockApiService.getTopPerformers());
     }
 
     public Object getCachedGainers() {
-        return cachedGainers.get();
+        return cachedstocks.get();
     }
     public Object getCachedLosers() {
-        return cachedLosers.get();
+        return cachedstocks.get();
     }
 }

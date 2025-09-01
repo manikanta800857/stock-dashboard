@@ -1,6 +1,6 @@
 package com.learning.hello_spring;
 import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -10,7 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 
 @Service
-public class IndianStockApiService {
+public class IndianNewsApiService {
 
     @Value("${indianapi.base-url}")
     private String baseUrl;
@@ -20,33 +20,33 @@ public class IndianStockApiService {
 
     private final RestTemplate restTemplate;
 
-    public IndianStockApiService(RestTemplate restTemplate) {
+    public IndianNewsApiService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public Object getTopPerformers() {
+    
+    public Object getNews() {
         try {
-            String url = baseUrl + "/trending";
+            String url = baseUrl + "/news";
 
             HttpHeaders headers = new HttpHeaders();
            headers.set("x-api-key", apiKey);
             HttpEntity<?> entity = new HttpEntity<>(headers);
 
-            ResponseEntity<Map> response = restTemplate.exchange(
+            ResponseEntity<List> response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
                     entity,
-                    Map.class
+                    List.class
             );
 
             System.out.println("RAW API RESPONSE: " + response.getBody());
 
-            // Change "trending_stocks" to the correct field name as per your API JSON
-            return response.getBody() != null ? response.getBody().get("trending_stocks") : Collections.emptyList();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return Collections.emptyList();
-        }
+        return response.getBody();
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        return Collections.emptyList();
+    }
     }
 
 }

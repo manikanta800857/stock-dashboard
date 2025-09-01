@@ -1,6 +1,6 @@
 package com.learning.hello_spring;
 import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -10,7 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 
 @Service
-public class IndianNewsApiService {
+public class IndianStockApiService {
 
     @Value("${indianapi.base-url}")
     private String baseUrl;
@@ -20,33 +20,34 @@ public class IndianNewsApiService {
 
     private final RestTemplate restTemplate;
 
-    public IndianNewsApiService(RestTemplate restTemplate) {
+    public IndianStockApiService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    
-    public Object getNews() {
+    public Object getTopPerformers() {
         try {
-            String url = baseUrl + "/news";
+            String url = baseUrl + "/trending";
 
             HttpHeaders headers = new HttpHeaders();
            headers.set("x-api-key", apiKey);
             HttpEntity<?> entity = new HttpEntity<>(headers);
 
-            ResponseEntity<List> response = restTemplate.exchange(
+            ResponseEntity<Map> response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
                     entity,
-                    List.class
+                    Map.class
             );
 
             System.out.println("RAW API RESPONSE: " + response.getBody());
 
-        return response.getBody();
-    } catch (Exception ex) {
-        ex.printStackTrace();
-        return Collections.emptyList();
+            // Change "trending_stocks" to the correct field name as per your API JSON
+            return response.getBody() != null ? response.getBody().get("trending_stocks") : Collections.emptyList();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return Collections.emptyList();
+        }
     }
-    }
+   
 
 }

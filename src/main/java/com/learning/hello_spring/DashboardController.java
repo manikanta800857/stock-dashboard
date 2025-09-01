@@ -10,9 +10,13 @@ public class DashboardController {
 
     private final CachedStockService cachedStockService;
 
+    // Inject CachedNewsService here
+    private final CachedNewsService cachedNewsService;
+
     @Autowired
-    public DashboardController(CachedStockService cachedStockService) {
+    public DashboardController(CachedStockService cachedStockService, CachedNewsService cachedNewsService) {
         this.cachedStockService = cachedStockService;
+        this.cachedNewsService = cachedNewsService;
     }
 
     @GetMapping("/dashboard")
@@ -27,6 +31,11 @@ public class DashboardController {
 
         model.addAttribute("gainers", gainersMap.get("top_gainers"));
         model.addAttribute("losers", losersMap.get("top_losers"));
+
+        // Add news data to model
+        Object newsObj = cachedNewsService.getCachedNews();
+        model.addAttribute("newsList", newsObj);
+
         return "dashboard";
     }
 

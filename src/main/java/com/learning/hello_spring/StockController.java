@@ -25,4 +25,6 @@ public class StockController {
     public Object getTopLosers() {
         return cachedStockService.getCachedLosers();
     }
+    
+    
 }

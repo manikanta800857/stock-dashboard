@@ -1,52 +1,26 @@
 package com.learning.hello_spring;
-import java.util.Collections;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
-public class IndianNewsApiService {
+public class CachedNewsService {
 
-    @Value("${indianapi.base-url}")
-    private String baseUrl;
+    private final IndianNewsApiService indianNewsApiService;
+    private final AtomicReference<Object> cachedNews = new AtomicReference<>();
 
-    @Value("${indianapi.api-key}")
-    private String apiKey;
-
-    private final RestTemplate restTemplate;
-
-    public IndianNewsApiService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public CachedNewsService(IndianNewsApiService indianNewsApiService) {
+        this.indianNewsApiService = indianNewsApiService;
     }
 
-    
-    public Object getNews() {
-        try {
-            String url = baseUrl + "/news";
-
-            HttpHeaders headers = new HttpHeaders();
-           headers.set("x-api-key", apiKey);
-            HttpEntity<?> entity = new HttpEntity<>(headers);
-
-            ResponseEntity<List> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    entity,
-                    List.class
-            );
-
-            System.out.println("RAW API RESPONSE: " + response.getBody());
-
-        return response.getBody();
-    } catch (Exception ex) {
-        ex.printStackTrace();
-        return Collections.emptyList();
-    }
+    // Update news every 12 hours
+    @Scheduled(fixedRate = 43200000)
+    public void refreshCache() {
+        cachedNews.set(indianNewsApiService.getNews());
     }
 
+    public Object getCachedNews() {
+        return cachedNews.get();
+    }
 }

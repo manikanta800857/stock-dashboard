@@ -12,6 +12,7 @@ public class CachedNewsService {
 
     public CachedNewsService(IndianNewsApiService indianNewsApiService) {
         this.indianNewsApiService = indianNewsApiService;
+        refreshCache();
     }
 
     // Update news every 12 hours

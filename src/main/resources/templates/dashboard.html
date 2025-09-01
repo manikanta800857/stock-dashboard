@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Indian Stock Market Top Performers - Dark Mode</title>
+   <title>Latest Stock News</title>
   <style>
     /* CSS Custom Properties for Theme Colors */
     :root {
@@ -427,6 +428,70 @@
         padding: 0 5px;
       }
     }
+
+    .news-container {
+           .news-content {
+  flex: 1;
+  text-align: left;
+}
+        }
+        .news-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px; /* space between content and image */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 24px 24px 24px 24px; /* more space all sides */
+  margin-bottom: 32px;          /* increased space between cards */
+  box-shadow: 0 2px 8px rgba(244, 243, 243, 0.05);
+  background: #fafafa;
+}
+        .news-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        .news-summary {
+          color: #444;
+           margin-bottom: 6px;
+          }
+        .news-meta {
+  font-size: 0.9em;
+  color: #888;
+  margin-top: 8px;
+  text-align: left;
+}
+        .news-container h2 {
+  color: var(--text-primary);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  margin-top: 32px;         /* Optional: extra space above if needed */
+}
+
+        .news-image {
+  max-width: 140px;
+  width: 140px;
+  height: auto;
+  margin-left: 16px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+        .clearfix { clear: both; }
+        @media (max-width:600px) {
+            .news-image { display:none; }
+        }
+        @media (max-width: 700px) {
+  .news-card {
+    flex-direction: column;
+    gap: 0;
+    padding: 16px;
+  }
+  .news-image {
+    display: block;
+    margin: 16px auto 0 auto;
+    max-width: 100%;
+    width: 100%;
+  }
+}
   </style>
 </head>
 <body>
@@ -480,6 +545,11 @@
           <tbody id="stockBodyLosers"></tbody>
         </table>
       </div>
+    </div>
+    <div class="news-container">
+    <h2>Latest Stock News</h2>
+    <div id="news-list">
+        <!-- News cards will be inserted here by JS -->
     </div>
   </div>
 
@@ -685,7 +755,7 @@
             }, index * 100);
           });
         } catch (error) {
-          tbody.innerHTML = `<tr><td colspan="13">❌ Failed to fetch stocks: ${error}</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="13"> Failed to fetch stocks: ${error}</td></tr>`;
           console.error('Failed to fetch gainer stocks', error);
         }
       }
@@ -728,6 +798,42 @@
         }
       }
     });
+
+     async function fetchNews() {
+        try {
+            const response = await fetch('/api/news');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const newsList = await response.json();
+            const container = document.getElementById('news-list');
+            container.innerHTML = ''; // Clear previous content
+
+            newsList.forEach(news => {
+                const imgHtml = news.image_url ? `<img src="${news.image_url}" alt="news image" class="news-image" />` : '';
+                const newsCard = document.createElement('div');
+                newsCard.classList.add('news-card');
+                newsCard.innerHTML = `
+                    ${imgHtml}
+                    <div class="news-title">${news.title || 'No Title'}</div>
+                    <div class="news-summary">${news.summary || 'No summary available'}</div>
+                    <div class="news-meta">
+                        <span>${news.source || ''}</span> |
+                        <span>${news.pub_date || ''}</span>
+                        <a href="${news.url || '#'}" target="_blank">Read more</a>
+                    </div>
+                    <div class="clearfix"></div>
+                `;
+                container.appendChild(newsCard);
+            });
+        } catch (error) {
+            console.error('Error fetching news data:', error);
+            document.getElementById('news-list').innerText = 'Failed to load news.';
+        }
+    }
+
+    // Load news on page load
+    window.onload = fetchNews;
   </script>
 </body>
 </html>

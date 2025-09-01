@@ -33,7 +33,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
             <configuration>
-                <main.class>com.learning.hello_spring.HelloSpringApplication</main.class>
+                <mainClass>com.learning.hello_spring.StockDashboardApplication</mainClass>
             </configuration>
         </plugin>
     </plugins>
